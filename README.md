@@ -53,11 +53,7 @@
 
 #### 资产管理(可自动搜集，可手动添加，批量修改项目，云商，状态)
 
-![](https://i.imgur.com/ciZiMO4.png)
-
-#### 下拉搜索演示
-
-![](https://i.imgur.com/cytwgUj.png)
+![](https://i.imgur.com/Hw3CuUL.png)
 
 #### 手动添加演示
 
