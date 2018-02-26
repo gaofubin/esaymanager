@@ -1,0 +1,479 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static "css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+{#    <link href="{% static 'css/orange-blue.css' %}" rel="stylesheet">#}
+    <link href="{% static 'css/bootstrap-select.min.css' %}" rel="stylesheet">
+    <style>
+        tr td, th {
+            text-align: center;
+        }
+
+        .condition a {
+            display: inline-block;
+            padding: 3px;
+        }
+
+        .condition a.active {
+            background-color: #2a3f54;
+            color: white;
+        }
+
+        select {
+            height: 34px;
+            width: 100px;
+            border: 1px solid #5bc0de;
+            opacity: 0.8;
+            color: #2A3F54;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <a href="{% url 'sql_add' %}" style="float:left;" class="btn btn-info btn-sm" role="button"><i
+                            class="fa fa-plus"></i></a>
+                    <h2>资产管理
+                        <small>数据库列表</small>
+                    </h2>
+
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- 筛选功能 -->
+                <div class="x_content ">
+
+                    <form action="" class="form-inline" style="float: right">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="search_input" placeholder="请输入搜索内容" style="display: inline-block">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="button" class="form-control btn-default" id="search" value="搜索">
+                        </div>
+                    </form>
+
+
+                    <span style="font-size: 15px;color: #2A3F54">云商：</span>
+                    <select name="asset_type" class="m-b" onchange="window.location=this.value">
+
+                        <option value="/cmdb/sql_list-0-{{ kwargs.project_name_id }}-{{ kwargs.status }}/">全部</option>
+                        {% for cloud in cloud_filter %}
+                            {% if cloud.id == kwargs.cloud_name_id %}
+                                <option selected
+                                        value="/cmdb/sql_list-{{ cloud.id }}-{{ kwargs.project_name_id }}-{{ kwargs.status }}/">{{ cloud.name }}</option>
+                            {% else %}
+                                <option value="/cmdb/sql_list-{{ cloud.id }}-{{ kwargs.project_name_id }}-{{ kwargs.status }}/">{{ cloud.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+
+                    <span style="font-size: 15px;color: #2A3F54 ;margin-left: 10px">项目：</span>
+                    <select name="asset_type" class="m-b" onchange="window.location=this.value">
+
+                        <option value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-0-{{ kwargs.status }}/">全部</option>
+                        {% for pro in pro_filter %}
+                            {% if pro.id == kwargs.project_name_id %}
+                                <option selected
+                                        value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-{{ pro.id }}-{{ kwargs.status }}/">{{ pro.name }}</option>
+                            {% else %}
+                                <option value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-{{ pro.id }}-{{ kwargs.status }}/">{{ pro.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <span style="font-size: 15px;color: #2A3F54 ;margin-left: 10px">状态：</span>
+                    <select name="asset_type" class="m-b" onchange="window.location=this.value">
+
+                        <option value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-{{ kwargs.project_name_id }}-0/">全部
+                        </option>
+                        {% for status in status_filter %}
+                            {% if status.0 == kwargs.status %}
+                                <option selected
+                                        value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-{{ kwargs.project_name_id }}-{{ status.0 }}/">{{ status.1 }}</option>
+                            {% else %}
+                                <option value="/cmdb/sql_list-{{ kwargs.cloud_name_id }}-{{ kwargs.project_name_id }}-{{ status.0 }}/">{{ status.1 }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+
+                    <hr style="border: 1px solid #E6E9ED">
+                    <button type="button" class="btn btn-sm btn-success" id="edit_select" style="float: left">批量修改
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" id="del_select" style="float: left">删除所选
+                    </button>
+
+
+                </div>
+
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+
+                    <div class="table-responsive">
+                        <table id="datatable-buttons"
+                               class="table table-striped table-bordered table-hover table-condensed jambo_table bulk_action">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" id="check-all" class="flat"></th>
+                                <th>数据库名称</th>
+                                <th>内网IP</th>
+                                <th>内存</th>
+                                <th>硬盘</th>
+                                <th>类型</th>
+                                <th>状态</th>
+                                <th>所在区域</th>
+                                <th>所属项目</th>
+                                <th>所属云平台</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tb">
+                            {% for row in sql_obj.object_list %}
+                                <tr class="even pointer" id="{{ row.id }}">
+                                    <td class="a center">
+                                        <input type="checkbox" class="flat" name="table_records" value="{{ row.id }}">
+                                    </td>
+                                    <td>{{ row.sql_name }}</td>
+                                    <td>{{ row.ip }}</td>
+                                    <td>{{ row.memory }}</td>
+                                    <td>{{ row.disk }}</td>
+                                    <td>{{ row.get_type_display }}</td>
+                                    <td>{{ row.get_status_display }}</td>
+                                    <td>{{ row.area }}</td>
+                                    <td>{{ row.project_name }}</td>
+                                    <td>{{ row.cloud_name }}</td>
+
+                                    <td class=" last" style="text-align: center">
+                                        <a class="btn btn-success btn-xs" href="#">查看</a>
+                                        <a class="btn btn-warning btn-xs" href="/cmdb/sql_edit-{{ row.id }}">编辑</a>
+                                        <button class="btn btn-danger btn-xs del_row">删除</button>
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+                        <!--分页-->
+                        <nav style="text-align: center">
+                            <div class="pagination">
+
+                                <ul class="pagination">
+                                    <li>
+                                        {% if sql_obj.has_previous %}
+                                            <a href="?{{ sql_obj.previous_page_number.querystring }}"
+                                               class="prev">上一页</a>
+                                        {% else %}
+                                            <span class="disabled prev">上一页</span>
+                                        {% endif %}
+                                    </li>
+                                    {% for page in sql_obj.pages %}
+                                        {% if page %}
+                                            {% ifequal page sql_obj.number %}
+                                                <li><span class="current page"
+                                                          style="background-color: cornflowerblue">{{ page }}</span>
+                                                </li>
+                                            {% else %}
+                                                <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                                            {% endifequal %}
+                                        {% else %}
+
+                                        {% endif %}
+                                    {% endfor %}
+                                    <li>
+                                        {% if sql_obj.has_next %}
+                                            <a href="?{{ sql_obj.next_page_number.querystring }}" class="next"> 下一页</a>
+                                        {% else %}
+                                            <span class="disabled next">下一页</span>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- 单条删除确认 -->
+    <div class="modal fade" id="delcfmModel">
+        <div class="modal-dialog">
+            <div class="modal-content message_align">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    <p>您确认要删除吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="delNid"/>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <a id="DelConfirm" class="btn btn-success" data-dismiss="modal">确定</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- 多条删除确认 -->
+    <div class="modal fade" id="delSelect">
+        <div class="modal-dialog">
+            <div class="modal-content message_align">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">提示信息</h4>
+                </div>
+                <div class="modal-body" id="delinfo">
+                    <p>您确认要删除吗？</p>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="delNid"/>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <a id="DelSelectConfirm" class="btn btn-success" data-dismiss="modal">确定</a>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- 批量修改 -->
+    <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">批量修改</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">云商选择</label>
+                            <div class="col-md-4">
+                                <select data-style="btn-primary" class="selectpicker form-control" id="cld_select" style="display: none;">
+                                    <option id="" style="font-size: 14px">---请选择---</option>
+                                    {% for row in cloud_filter %}
+                                    <option id="{{ row.id }}" style="font-size: 14px">{{ row.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">项目选择</label>
+                            <div class="col-md-4">
+                                <select data-style="btn-primary" class="selectpicker form-control" id="pro_select" style="display: none;">
+                                <option id="" style="font-size: 14px">---请选择---</option>
+                                    {% for row in pro_filter %}
+                                    <option id="{{ row.id }}" style="font-size: 14px">{{ row.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">区域选择</label>
+                            <div class="col-md-4">
+                                <select data-style="btn-primary" class="selectpicker form-control" id="area_select" style="display: none;">
+                                <option id="" style="font-size: 14px">---请选择---</option>
+                                    {% for row in area_filter %}
+                                    <option id="{{ row.id }}" style="font-size: 14px">{{ row.region }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputPassword3" class="col-sm-2 control-label">状态选择</label>
+                            <div class="col-md-4">
+                                <select data-style="btn-primary" class="selectpicker form-control" id="status_select" style="display: none;">
+                                <option id="" style="font-size: 14px">---请选择---</option>
+                                    {% for row in status_filter %}
+                                    <option id="{{ row.0 }}" style="font-size: 14px">{{ row.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <a class="btn btn-primary" id="edit_confirm" data-dismiss="modal">确认</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "js/jquery.dataTables.min.js" %}"></script>
+    <!-- datatable button  -->
+    <script src="{% static "js/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "js/bootstrap-select.min.js" %}"></script>
+
+
+    <script src="{% static 'js/select2.min.js' %}"></script>
+    <script src="{% static 'js/jquery.multi-select.js' %}"></script>
+    <script src="{% static 'js/ui-dropdown-select.js' %}"></script>
+
+
+    <script>
+
+        $(function () {
+
+            bindDel();
+            bindDelConfirm();
+            del_select();
+            bindSelectDelConfirm();
+            datatable_func();
+            edit_select();
+            bindEditSelect();
+            search();
+        });
+
+        function bindDel() {
+            $("#tb").on('click', '.del_row', function () {
+                $("#delcfmModel").modal("show");
+                var rowId = $(this).parent().parent().prop("id");
+                $("#delNid").val(rowId);
+            })
+        }
+
+        function bindDelConfirm() {
+            var arr = [];
+            $("#DelConfirm").click(function () {
+
+                var rowId = $("#delNid").val();
+                arr.push(rowId);
+                console.log(arr);
+                $.ajax({
+                    url: '{% url 'sql_del' %}',
+                    type: 'POST',
+                    data: {'nid': arr},
+                    success: function (arg) {
+                        var dict = JSON.parse(arg);
+                        if (dict.status) {
+                            swal({
+                                  title: "Success!",
+                                  text: "删除成功",
+                                  type: "success",
+                                  confirmButtonText: "OK"
+                                });
+                            $('tr[id="' + rowId + '"]').remove()
+                        }
+                        $('#delcfmModel').modal('hide');
+                    }
+                })
+            })
+        }
+
+        function del_select() {
+            arrdel = [];
+            $("#del_select").click(function () {
+
+                $("input[name='table_records']:checkbox").each(function () {
+                    if (true == $(this).is(':checked')) {
+                        arrdel.push($(this).val());
+                    }
+                });
+                if(arrdel.length>0){
+                    $("#delinfo").html("您确定要删除选中的"+arrdel.length+"条数据吗？");
+                    $("#delSelect").modal('show');
+                }
+            })
+        }
+
+        function bindSelectDelConfirm() {
+            delnum = arrdel;
+            $("#DelSelectConfirm").click(function () {
+                $.ajax({
+                    url: '{% url 'sql_del' %}',
+                    type: 'POST',
+                    data:{'nid': delnum},
+                    success: function (arg) {
+                        var dict = JSON.parse(arg);
+                        if(dict.status){
+                            swal({
+                                  title: "Success!",
+                                  text: "已删除"+delnum.length+"条数据！",
+                                  type: "success",
+                                  confirmButtonText: "OK"
+                                });
+                            $("#tb tr.selected").remove();
+                        }
+                    }
+                })
+            })
+        }
+
+        function datatable_func() {
+            $('#datatable-buttons').dataTable({
+                bFilter: false,    //去掉搜索框方法三：这种方法可以
+                bLengthChange: false,   //去掉每页显示多少条数据方法
+                paging: false,
+                bInfo: false
+            });
+        }
+
+        function search() {
+            var request_url = "";
+            $("#search").click(function () {
+{#                var type = $(".selectpicker").find("option:selected").attr('value');#}
+                var keywords = $("#search_input").val();
+                request_url = "{% url 'sql_list' cloud_name_id=0 project_name_id=0 status=0 %}?keywords=" + keywords;
+                window.location.href = request_url
+            })
+        }
+
+        function edit_select() {
+            $("#edit_select").click(function () {
+                arr = [];
+                $("input[name='table_records']:checkbox").each(function () {
+                    if (true == $(this).is(':checked')) {
+                        arr.push($(this).val())
+                    }
+                });
+                if (arr.length>0){
+                    $("#formModal").modal('show');
+                }
+            })
+        }
+
+        function bindEditSelect() {
+
+
+                $("#edit_confirm").click(function () {
+                    var edit_num = arr;
+                    var cloud_id = $("#cld_select").find("option:selected").attr('id');
+                    var pro_id = $("#pro_select").find("option:selected").attr('id');
+                    var area_id = $("#area_select").find("option:selected").attr('id');
+                    var status_id = $("#status_select").find("option:selected").attr('id');
+                    $.ajax({
+                        url: '{% url 'sql_select_update' %}',
+                        type: 'POST',
+                        data: {'edit_num':edit_num,'cloud_id':cloud_id,'pro_id':pro_id,'area_id':area_id,'status_id':status_id},
+                        success: function (arg) {
+                            if(arg){
+                                location.reload();
+                            }
+                        }
+                    })
+                }
+                )
+        }
+
+
+
+
+    </script>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% load static %}
+<!-- 上侧整体 -->
+<div class="top_nav">
+    <div class="nav_menu">
+        <nav>
+            <div class="nav toggle">
+                <!-- 左上侧伸缩 -->
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                    <!-- 右上侧用户菜单 -->
+                    <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
+                       aria-expanded="false">
+                        <img src="{% static 'images/img.jpg' %}" alt="">{{ request.user }}
+                        <span class=" fa fa-angle-down"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                        <li><a href="/admin/">后台管理</a></li>
+                        <li><a href="{% url 'change_password' %}">修改密码</a></li>
+                        <li><a href="{% url 'user_logout' %}"><i class="fa fa-sign-out pull-right"></i>注销登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

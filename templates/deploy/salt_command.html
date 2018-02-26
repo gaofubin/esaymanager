@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div id="div1">
+        <form action="{% url 'salt_command' %}" method="post">
+            主机：<input type="text" name="host">
+            命令：<input type="text" name="command">
+            参数：<input type="text" name="arg">
+            <input type="submit" value="执行">
+        </form>
+    </div>
+
+
+    <div id="div2">
+            {{ result }}
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

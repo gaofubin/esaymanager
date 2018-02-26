@@ -1,0 +1,68 @@
+{% load static %}
+<div class="col-md-3 left_col">
+    <div class="left_col scroll-view">
+
+
+        <div class="navbar nav_title" style="border: 0;">
+            <a href="{% url 'index' %}" class="site_title"><i class="fa fa-paw"></i> <span>welcome ops!</span></a>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="profile clearfix">
+            <div class="profile_pic">
+                <img src="{% static 'images/img.jpg' %}" alt="..." class="img-circle profile_img">
+            </div>
+            <div class="profile_info">
+                <span>Welcome,</span>
+                <h2>{{ request.user }}</h2>
+            </div>
+        </div>
+        <br/>
+        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+            <div class="menu_section">
+                <ul class="nav side-menu">
+                    <li><a><i class="fa fa-home"></i> 控制面板 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{% url 'index' %}">控制台</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-edit"></i> 用户管理 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{% url 'user_list' %}">用户信息</a></li>
+                            <li><a href="{% url 'user_group_list' %}">用户组信息</a></li>
+                            <li><a href="{% url 'user_audit' %}">用户登录信息</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-desktop"></i> 资产管理 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{% url 'host_list' cloud_name_id=0 project_name_id=0 status=0 %}">主机列表</a></li>
+                            <li><a href="{% url 'cloud_list' %}">云商列表</a></li>
+                            <li><a href="{% url 'pro_list' %}">项目列表</a></li>
+                            <li><a href="{% url 'sql_list' cloud_name_id=0 project_name_id=0 status=0 %}">数据库列表</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-table"></i> 配置管理 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{% url 'salt_key_list' %}">Salt认证</a></li>
+                            <li><a href="{% url 'salt_command' %}">批量命令</a></li>
+                            <li><a href="#">文件分发</a></li>
+                            <li><a href="t#">服务部署</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-bar-chart-o"></i> 日志审计 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="#">用户执行记录</a></li>
+                            <li><a href="#">资产变更记录</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-laptop"></i>工单管理 <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="#">游戏维护</a></li>
+                            <li><a href="#">游戏更新</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

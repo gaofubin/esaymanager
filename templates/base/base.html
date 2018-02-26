@@ -1,0 +1,49 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}{% endblock %}</title>
+      <!--公共CSS-->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/nprogress.css' %}" rel="stylesheet">
+    <link href="{% static 'css/daterangepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/green.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sweetalert/sweetalert.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+      <!--单独页面可定制CSS-->
+    {% block css %}{% endblock %}
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+
+            <!-- include left -->
+            {% include 'base/left_menu.html' %}
+            <!-- include heder -->
+            {% include 'base/head_menu.html' %}
+            <!--right content-->
+          <div class="right_col" role="main">
+            {% block content %}{% endblock %}
+          </div>
+            <!-- include footer -->
+            {% include 'base/foot_menu.html' %}
+      </div>
+    </div>
+    <!--公共JS-->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/custom.min.js' %}"></script>
+    <script src="{% static 'js/icheck.min.js' %}"></script>
+    <script src="{% static 'js/sweetalert/sweetalert.min.js' %}"></script>
+  <!--单独页面定制js-->
+  {% block js %}{% endblock %}
+  </body>
+</html>

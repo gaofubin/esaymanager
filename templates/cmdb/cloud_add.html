@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="row">
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>资产管理
+                        <small>添加云平台</small>
+                        </h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form class="form-horizontal form-border" method="post" action="{% url 'cloud_add' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for row in form %}
+                                <div class="item form-group">
+                                    <label class="control-label col-md-2 col-sm-2 col-xs-12"
+                                           style="text-align:left;">{{ row.label_tag }}</label>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        {{ row }}
+                                        <div style="padding-top:10px;">
+                                            {{ row.errors }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="form-group">
+                                <div>
+                                    <button id="send" type="submit" class="btn btn-primary pull-left">添加</button>
+                                    <button type="reset" class="btn btn-success pull-left" onclick="res();">返回</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <!-- validator -->
+        <script type="text/javascript" src="/static/js/validator.min.js"></script>
+    <script>
+        function res() {
+            history.go(-1);
+        }
+    </script>
+
+
+{% endblock %}

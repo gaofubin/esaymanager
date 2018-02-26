@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+
+    <link href="{% static 'css/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block content %}
+<button id="ccc">点击</button>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/sweetalert/sweetalert.min.js' %}"></script>
+    <script>
+    $("#ccc").click(function () {
+        swal({
+              title: "Success!",
+              text: "删除完成",
+              type: "success",
+              confirmButtonText: "OK"
+            });
+    })
+
+    </script>
+
+
+{% endblock %}

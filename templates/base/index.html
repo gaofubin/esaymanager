@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+
+<!-- 主页默认 content -->
+{% block content %}
+
+    <div class="">
+        <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
+                    <div class="count">0</div>
+                    <h3>用户总数</h3>
+                    <p>日期</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-comments-o"></i></div>
+                    <div class="count">0</div>
+                    <h3>资产总数</h3>
+                    <p>日期</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                    <div class="count">0</div>
+                    <h3>salt主机数</h3>
+                    <p>日期</p>
+                </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <div class="tile-stats">
+                    <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                    <div class="count">0</div>
+                    <h3>其他设备</h3>
+                    <p>日期</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>每页显示个数处理</p>
+    <p>手动收集资产</p>
+    <p>资产变更log写入数据库，前端展示</p>
+    <p>webssh的实现</p>
+    <p>salt控制台执行命名</p>
+{% endblock %}

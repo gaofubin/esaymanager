@@ -1,0 +1,41 @@
+{% extends 'base/base.html' %}
+{% block content %}
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <ol class="breadcrumb">
+                            <li><a href="{% url 'index' %}">首页</a></li>
+                            <li><a href="{% url 'change_password' %}">修改密码</a></li>
+                        </ol>
+
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+                        <form class="form-horizontal form-border" method="post" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for i in form %}
+                            <div class="item form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12" style="text-align:left;">{{ i.label_tag }}</label>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    {{ i }}
+                                    <div style="padding-top:10px;">
+                                        {{ i.errors }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-success btn-sm">确认修改</button>
+                            <button type="reset" class="btn btn-warning btn-sm">清空输入</button>.
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block js %}
+{#    自定义js  #}
+{% endblock %}

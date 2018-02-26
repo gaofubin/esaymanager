@@ -1,0 +1,236 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static "css/dataTables.bootstrap.min.css" %}" rel="stylesheet">
+
+    <style>
+        .btn-default:hover{
+            background-color: dodgerblue !important;
+        }
+        tr td,th{
+            text-align: center;
+        }
+
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Salt认证
+                    <small>Key管理</small>
+                    </h2>
+
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="x_title btn-group">
+                        <button type="button" class="btn btn-sm btn-success" id="flush_status" style="float: left">刷新状态</button>
+                        <button type="button" class="btn btn-sm btn-info" id="auth" style="float: left; margin-left: 5px">批量认证</button>
+                        <button type="button" class="btn btn-sm btn-danger" id="del_select" style="float: left;margin-left: 5px">删除所选</button>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+
+                        <div class="table-responsive">
+                            <table id="datatable-buttons" class="table table-striped table-bordered table-hover table-condensed jambo_table bulk_action">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="check-all" class="flat"></th>
+                                        <th>minion名称</th>
+                                        <th>创建时间</th>
+                                        <th>更新时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tb">
+                                    {% for row in key_list.object_list %}
+                                    <tr class="even pointer" id="{{ row.id }}">
+                                        <td class="a center">
+                                            <input type="checkbox" class="flat" name="table_records" value="{{ row.id }}">
+                                        </td>
+                                        <td class="username">{{ row.name }}</td>
+                                        <td>{{ row.create_date }}</td>
+                                        <td>{{ row.auth_date }}</td>
+
+                                        {% ifequal row.status 1 %}
+                                        <td><button class="btn btn-success btn-xs">{{ row.get_status_display }}</button></td>
+                                            <td class=" last" style="text-align: center">
+                                            <button class="btn btn-danger btn-xs del-key">删除</button>
+                                        </td>
+                                        {% else %}
+                                            <td><button class="btn btn-danger btn-xs">{{ row.get_status_display }}</button></td>
+                                            <td class=" last" style="text-align: center">
+                                            <button class="btn btn-success btn-xs allow-key">允许</button>
+                                        </td>
+                                        {% endifequal %}
+                                    </tr>
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        <!--分页-->
+                        <nav style="text-align: center">
+                            <div class="pagination">
+
+                                <ul class="pagination">
+                                    <li>
+                                        {% if key_list.has_previous %}
+                                            <a href="?{{ key_list.previous_page_number.querystring }}"
+                                               class="prev">上一页</a>
+                                        {% else %}
+                                            <span class="disabled prev">上一页</span>
+                                        {% endif %}
+                                    </li>
+                                    {% for page in key_list.pages %}
+                                        {% if page %}
+                                            {% ifequal page key_list.number %}
+                                                <li><span class="current page"
+                                                          style="background-color: cornflowerblue">{{ page }}</span>
+                                                </li>
+                                            {% else %}
+                                                <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                                            {% endifequal %}
+                                        {% else %}
+
+                                        {% endif %}
+                                    {% endfor %}
+                                    <li>
+                                        {% if key_list.has_next %}
+                                            <a href="?{{ key_list.next_page_number.querystring }}" class="next"> 下一页</a>
+                                        {% else %}
+                                            <span class="disabled next">下一页</span>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </nav>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 信息删除确认 -->
+<div class="modal fade" id="delcfmModel">
+  <div class="modal-dialog">
+    <div class="modal-content message_align">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title">提示信息</h4>
+      </div>
+      <div class="modal-body">
+        <p>您确认要删除吗？</p>
+      </div>
+      <div class="modal-footer">
+         <input type="hidden" id="delNid"/>
+         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+         <a  id="DelConfirm" class="btn btn-success" data-dismiss="modal">确定</a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+    <script src="{% static "js/jquery.dataTables.min.js" %}"></script>
+    <!-- datatable button  -->
+    <script src="{% static "js/dataTables.bootstrap.min.js" %}"></script>
+    <script>
+
+
+            $(function () {
+
+                datatable_func();
+                access_key();
+                flush_key();
+                delete_key();
+
+            });
+
+            function datatable_func() {
+            $('#datatable-buttons').dataTable({
+                bFilter: false,    //去掉搜索框方法三：这种方法可以
+                bLengthChange: false,   //去掉每页显示多少条数据方法
+                paging: false,
+                bInfo: false
+            });
+        }
+            function flush_key() {
+                $("#flush_status").click(function () {
+                    $.ajax({
+                        url: '{% url 'salt_key_update' %}',
+                        type: 'POST',
+                        success: function (arg) {
+                            if(arg){
+                                window.location.href = "{% url 'salt_key_list' %}";
+                            }
+                        }
+
+                    })
+                })
+            }
+            function access_key() {
+                $(".allow-key").click(function () {
+                    Id = $(this).parent().parent().prop('id');
+                    username = $(this).parent().siblings("[class='username']").text();
+                    $.ajax({
+                        url: '{% url 'salt_key_accept' %}',
+                        type: 'POST',
+                        data: {'id':Id,'username':username},
+                        success:function (arg) {
+                            if(arg){
+                                swal({
+                                  title: "Success!",
+                                  text: "添加完成",
+                                  type: "success",
+                                  confirmButtonText: "OK"
+                                });
+                                $('tr[id="'+ Id +'"]').find("td:eq(4)").children().text("已认证").removeClass("btn-danger").addClass("btn-success");
+                                $('tr[id="'+ Id +'"]').find("td:eq(5)").children().text("删除").removeClass("btn-success").addClass("btn-danger")
+                            }
+                        }
+                    })
+                })
+            }
+            function delete_key() {
+
+                $(".del-key").click(function () {
+                    Id = $(this).parent().parent().prop('id');
+                    username = $(this).parent().siblings("[class='username']").text();
+                    $.ajax({
+                        url: '{% url 'salt_key_delete' %}',
+                        type: 'POST',
+                        data: {'id':Id,'username':username},
+                        success:function (arg) {
+                            if(arg){
+                                swal({
+                                  title: "Success!",
+                                  text: "删除完成",
+                                  type: "success",
+                                  confirmButtonText: "OK"
+                                });
+                                $('tr[id="'+ Id+'"]').remove();
+                            }
+                        }
+
+                    })
+                })
+            }
+
+
+
+    </script>
+
+{% endblock %}

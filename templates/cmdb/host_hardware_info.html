@@ -1,0 +1,189 @@
+<style>
+    .guige {
+
+    }
+
+    .guige-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .guige-table .title {
+        background: #2A3F54;
+        text-align: left;
+        font-weight: bold;
+        line-height: 32px;
+        height: 32px;
+        font-family: "微软雅黑";
+        border-right: 1px solid #dcdcdc;
+        border-left: 2px solid #0488cd;
+    }
+
+    .guige-table td, .content .guige-table th {
+        border: 1px solid #dcdcdc;
+        line-height: 30px;
+        height: 30px;
+        padding: 0 10px;
+        border-top: 0;
+    }
+
+    .guige-table .body-left {
+        width: 126px;
+        font-weight: normal;
+        text-align: right;
+        color: #666;
+    }
+
+    .guige-table .body-right {
+        color: #333;
+    }
+
+</style>
+<div class="guige">
+    <table class="guige-table">
+        <tbody>
+        <tr>
+            <th colspan="5" class="title f14 th"><span class="padding-l-8">基础信息</span></th>
+        </tr>
+        <tr>
+            <td>名称</td>
+            <td colspan="4">值</td>
+        </tr>
+        <tr>
+            <td>操作系统</td>
+            <td colspan="4">{{ asset.hosts.os }}</td>
+        </tr>
+        <tr>
+            <td>系统内核</td>
+            <td colspan="4">{{ asset.hosts.kernel }}</td>
+        </tr>
+        <tr>
+            <td>序列号</td>
+            <td colspan="4">{{ asset.hosts.sn }}</td>
+        </tr>
+        <tr>
+            <td>厂商</td>
+            <td colspan="4">{{ asset.hosts.manufacturer }}</td>
+        </tr>
+        <tr>
+            <td>产品名称</td>
+            <td colspan="4">{{ asset.hosts.productname }}</td>
+        </tr>
+        <tr>
+            <td>CPU型号</td>
+            <td colspan="4">{{ asset.hosts.cpu_model }}</td>
+        </tr>
+        <tr>
+            <td>CPU线程</td>
+            <td colspan="4">{{ asset.hosts.cpu_nums }}</td>
+        </tr>
+
+
+
+        <!-- 网卡信息开始 -->
+        <tr>
+            <th colspan="5" class="title f14 th"><span class="padding-l-8">网卡信息</span></th>
+        </tr>
+        <tr>
+            <td>名称</td>
+            <td>MAC地址</td>
+            <td>IP地址</td>
+            <td>掩码</td>
+            <td>UP</td>
+        </tr>
+{#        {% for item in response.data.nic.all %}#}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.hwaddr }}</td>
+                <td>{{ asset.hosts.wan }}</td>
+                <td>{{ item.netmask }}</td>
+                <td>{{ item.up }}</td>
+            </tr>
+{#        {% endfor %}#}
+        <!-- 网卡信息结束 -->
+
+        <!-- 硬盘信息开始 -->
+        <tr>
+            <th colspan="5" class="title f14" style="border-left:2px solid #0488cd;">
+                <span class="padding-l-8">硬盘信息</span>
+            </th>
+        </tr>
+        <tr>
+            <td>插槽</td>
+            <td>容量</td>
+            <td>接口类型</td>
+            <td colspan="2">型号</td>
+        </tr>
+
+{#        {% for item in response.data.disk.all %}#}
+            <tr>
+                <td>{{ item.slot }}</td>
+                <td>{{ asset.hosts.disk }}</td>
+                <td>{{ item.pd_type }}</td>
+                <td colspan="2">{{ item.model }}</td>
+
+            </tr>
+{#        {% endfor %}#}
+        <!-- 硬盘信息结束 -->
+
+        <!-- 内存信息开始 -->
+        <tr>
+            <th colspan="5" class="title f14" style="border-left:2px solid #0488cd;">
+                <span class="padding-l-8">内存信息</span>
+            </th>
+        </tr>
+        <tr>
+            <td>插槽</td>
+            <td>容量</td>
+            <td>频率</td>
+            <td colspan="2">型号</td>
+        </tr>
+
+{#        {% for item in response.data.memory.all %}#}
+            <tr>
+                <td>{{ item.slot }}</td>
+                <td>{{ asset.hosts.memory }}</td>
+                <td>{{ item.speed }}</td>
+                <td colspan="2">{{ item.model }}</td>
+            </tr>
+{#        {% endfor %}#}
+        <!-- 内存信息结束 -->
+
+        <!-- salt信息开始 -->
+        <tr>
+            <th colspan="5" class="title f14" style="border-left:2px solid #0488cd;">
+                <span class="padding-l-8">Salt-Minion信息</span>
+            </th>
+        </tr>
+        <tr>
+            <td>SaltID</td>
+            <td>客户端版本</td>
+            <td>最近更新时间</td>
+        </tr>
+        <tr>
+            <td>{{ asset.hosts.saltid }}</td>
+            <td>{{ asset.hosts.saltversion }}</td>
+            <td>{{ asset.hosts.updatetime }}</td>
+        </tr>
+        <!-- salt信息结束 -->
+        <!-- 操作系统环境开始 -->
+        <tr>
+            <th colspan="5" class="title f14" style="border-left:2px solid #0488cd;">
+                <span class="padding-l-8">操作系统环境</span>
+            </th>
+        </tr>
+        <tr>
+            <td>名称</td>
+            <td>值</td>
+        </tr>
+        <tr>
+            <td>系统环境</td>
+            <td colspan="4">{{ asset.hosts.locale }}</td>
+        </tr>
+        <!-- 操作系统环境结束 -->
+
+
+        </tbody>
+    </table>
+</div>
