@@ -3,7 +3,7 @@
 > esaymanager是基于saltapi使用django开发的资产管理平台,因公司云平台数量太多，资产信息没办法统一，抽出时间学习，最终实现的平台，功能还不是很完善，同行的小伙伴平时可以一起交流，一起进步。
 
 #### 联系方式
-	QQ：451009913
+	QQ交流群：282382782
 	github:https://github.com/gaofubin
 	blog:http://www.cnblogs.com/gaofubin
 
